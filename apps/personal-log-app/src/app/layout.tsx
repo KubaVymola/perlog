@@ -1,5 +1,6 @@
 import './globals.css';
-import Navigation from '@/lib/components/navigation';
+import Navigation from '@/lib/components/Navigation';
+import { Providers } from './providers';
 
 export const metadata = {
     title: 'Welcome to demo2',
@@ -14,14 +15,14 @@ export default function RootLayout({
     return (
         <html lang="en" className="light">
             <body>
-                <div className="mx-auto flex min-h-screen w-full flex-col items-center bg-slate-200">
-                    <div className="container flex max-w-6xl flex-col items-stretch">
-                        <div className="flex items-center justify-center">
+                <Providers>
+                    <div className="min-h-screen w-full bg-slate-200 p-4">
+                        <div className="mx-auto flex max-w-lg flex-col items-center gap-4">
                             <Navigation />
+                            {children}
                         </div>
-                        {children}
                     </div>
-                </div>
+                </Providers>
             </body>
         </html>
     );

@@ -1,5 +1,4 @@
 import React, { cache } from 'react';
-// import { addLog } from './actions';
 import mongoClient from '@/lib/mongodb/client';
 import Log from '@/lib/models/log';
 
