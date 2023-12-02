@@ -8,6 +8,7 @@
     "private": true,
     "packageManager": "yarn@1.22.19",
     "dependencies": {
+        "@hookform/resolvers": "^3.3.2",
         "@nextui-org/react": "^2.2.9",
         "@nx/next": "17.1.2",
         "framer-motion": "^10.16.5",

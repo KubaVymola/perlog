@@ -1,8 +1,9 @@
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Control,
     Controller,
+    FieldErrors,
     UseFormSetValue,
     UseFormWatch,
 } from 'react-hook-form';
@@ -12,6 +13,7 @@ import ChipInput from './ChipInput';
 import { DiaryFormType } from '../types/diary-form';
 import { DiaryFieldTypes, DiaryFieldVariants } from '../types/diary-form-field';
 import { diaryFieldTypeData } from '../constants/diary-form-fields';
+import ErrorMessage from './ErrorMessage';
 
 export type DiaryFormFieldProps = {
     control: Control<DiaryFormType, any>;
@@ -19,6 +21,7 @@ export type DiaryFormFieldProps = {
     watch: UseFormWatch<DiaryFormType>;
     remove: any;
     setValue: UseFormSetValue<DiaryFormType>;
+    errors?: FieldErrors<DiaryFormType>;
 };
 
 export default function DiaryFormField({
@@ -27,16 +30,30 @@ export default function DiaryFormField({
     watch,
     remove,
     setValue,
+    errors,
 }: DiaryFormFieldProps) {
     useEffect(() => {
         setValue(`fields.${index}.variant`, '');
-        setValue(`fields.${index}.initalTarget`, '');
-        setValue(`fields.${index}.moveTargetByValue`, 0);
-        setValue(`fields.${index}.moveTargetAfterDayCount`, 0);
+        setValue(`fields.${index}.initialTarget`, '');
+        setValue(`fields.${index}.moveTargetByValue`, '');
+        setValue(`fields.${index}.moveTargetAfterDayCount`, '');
         setValue(`fields.${index}.selectValues`, []);
-        setValue(`fields.${index}.rangeFrom`, 0);
-        setValue(`fields.${index}.rangeTo`, 0);
-    }, [watch(`fields.${index}.type`)]);
+        setValue(`fields.${index}.rangeFrom`, '');
+        setValue(`fields.${index}.rangeTo`, '');
+    }, [watch(`fields.${index}.fieldType`)]);
+
+    const [innerErrors, setInnerErrors] = useState(
+        errors?.fields && errors.fields[index]
+            ? errors.fields[index]
+            : undefined,
+    );
+
+    useEffect(() => {
+        if (!errors?.fields) return;
+        if (!errors.fields[index]) return;
+
+        setInnerErrors(errors.fields[index]);
+    }, [errors]);
 
     useEffect(() => {
         if (
@@ -48,16 +65,22 @@ export default function DiaryFormField({
         setValue(`fields.${index}.selectValues`, []);
     }, [watch(`fields.${index}.variant`)]);
 
+    const shouldRenderInitialTarget = () => {};
+
     return (
         <div className="flex w-full flex-row items-center justify-start gap-4">
-            <div className="grid w-full grid-cols-2 items-center gap-4">
-                <Controller
-                    name={`fields.${index}.name`}
-                    control={control}
-                    render={({ field }) => (
-                        <Input label="Name" type="text" {...field} />
-                    )}
-                />
+            <div className="grid w-full grid-cols-2 items-start gap-4">
+                <div>
+                    <Controller
+                        name={`fields.${index}.fieldName`}
+                        control={control}
+                        render={({ field }) => (
+                            <Input label="Name" type="text" {...field} />
+                        )}
+                    />
+
+                    <ErrorMessage message={innerErrors?.fieldName?.message} />
+                </div>
 
                 <Controller
                     name={`fields.${index}.note`}
@@ -68,7 +91,7 @@ export default function DiaryFormField({
                 />
 
                 <Controller
-                    name={`fields.${index}.type`}
+                    name={`fields.${index}.fieldType`}
                     control={control}
                     render={({ field }) => (
                         <Select
@@ -89,34 +112,39 @@ export default function DiaryFormField({
                     )}
                 />
 
-                {watch(`fields.${index}.type`) !== '' && (
-                    <DiaryFormVariantSelect
-                        control={control}
-                        type={watch(`fields.${index}.type`)}
-                        index={index}
-                    />
+                {watch(`fields.${index}.fieldType`) !== '' && (
+                    <>
+                        <DiaryFormVariantSelect
+                            control={control}
+                            type={watch(`fields.${index}.fieldType`)}
+                            index={index}
+                        />
+                        <ErrorMessage
+                            message={innerErrors?.fieldType?.message}
+                        />
+                    </>
                 )}
 
-                {(watch(`fields.${index}.type`) ===
+                {(watch(`fields.${index}.fieldType`) ===
                     DiaryFieldTypes.FixedTarget ||
-                    watch(`fields.${index}.type`) ===
+                    watch(`fields.${index}.fieldType`) ===
                         DiaryFieldTypes.MovingTarget) &&
                     watch(`fields.${index}.variant`) !== '' && (
                         <Controller
-                            name={`fields.${index}.initalTarget`}
+                            name={`fields.${index}.initialTarget`}
                             control={control}
                             render={({ field }) => (
                                 <Input
                                     {...field}
                                     type={
-                                        watch(`fields.${index}.variant`, '') ===
+                                        watch(`fields.${index}.variant`) ===
                                         DiaryFieldVariants.Time
                                             ? 'text'
                                             : 'number'
                                     }
                                     label="Target"
                                     placeholder={
-                                        watch(`fields.${index}.variant`, '') ===
+                                        watch(`fields.${index}.variant`) ===
                                         DiaryFieldVariants.Time
                                             ? '00:00'
                                             : watch(
@@ -132,7 +160,7 @@ export default function DiaryFormField({
                         />
                     )}
 
-                {watch(`fields.${index}.type`, '') ===
+                {watch(`fields.${index}.fieldType`, '') ===
                     DiaryFieldTypes.MovingTarget &&
                     watch(`fields.${index}.variant`, '') !== '' && (
                         <Controller
@@ -141,7 +169,6 @@ export default function DiaryFormField({
                             render={({ field }) => (
                                 <Input
                                     {...field}
-                                    value={String(field.value)}
                                     type="number"
                                     label="Change target by"
                                     placeholder="0"
@@ -161,7 +188,7 @@ export default function DiaryFormField({
                         />
                     )}
 
-                {watch(`fields.${index}.type`, '') ===
+                {watch(`fields.${index}.fieldType`, '') ===
                     DiaryFieldTypes.MovingTarget &&
                     watch(`fields.${index}.variant`, '') !== '' && (
                         <Controller
@@ -170,7 +197,6 @@ export default function DiaryFormField({
                             render={({ field }) => (
                                 <Input
                                     {...field}
-                                    value={String(field.value)}
                                     type="number"
                                     label="Change target each"
                                     placeholder="0"
@@ -179,7 +205,7 @@ export default function DiaryFormField({
                                             <span className="text-default-400 text-small">
                                                 {watch(
                                                     `fields.${index}.moveTargetAfterDayCount`,
-                                                ) === 1
+                                                ) === '1'
                                                     ? 'day'
                                                     : 'days'}
                                             </span>
@@ -220,7 +246,6 @@ export default function DiaryFormField({
                             render={({ field }) => (
                                 <Input
                                     {...field}
-                                    value={String(field.value)}
                                     type="number"
                                     label="Range from"
                                     placeholder={
@@ -238,7 +263,6 @@ export default function DiaryFormField({
                             render={({ field }) => (
                                 <Input
                                     {...field}
-                                    value={String(field.value)}
                                     type="number"
                                     label="Range to"
                                     placeholder={

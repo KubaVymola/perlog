@@ -1,6 +1,6 @@
 import React, { cache } from 'react';
 import mongoClient from '@/lib/mongodb/client';
-import Log from '@/lib/models/log';
+import Log from '@/lib/mongodb/models/log';
 
 const getData = cache(async () => {
     await mongoClient.connect();

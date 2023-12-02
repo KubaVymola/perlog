@@ -6,8 +6,6 @@ export const diaryFieldTypeData = [
         displayName: 'Record',
         allowedVariants: [
             DiaryFieldVariants.AnyTags,
-            DiaryFieldVariants.AnyTags,
-            DiaryFieldVariants.AnyTags,
             DiaryFieldVariants.FixedTags,
             DiaryFieldVariants.Select,
             DiaryFieldVariants.Number,

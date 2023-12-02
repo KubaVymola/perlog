@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
-import { FormData as DiaryType } from '@/lib/components/types/DiaryFormTypes';
+import { DiaryFormType } from '@/lib/types/diary-form';
 
-const DiarySchema = new mongoose.Schema<DiaryType>({
-    name: {
+const DiarySchema = new mongoose.Schema<DiaryFormType>({
+    diaryName: {
         type: String,
     },
     note: {
@@ -17,7 +17,7 @@ const DiarySchema = new mongoose.Schema<DiaryType>({
     },
     fields: [
         {
-            name: {
+            fieldName: {
                 type: String,
             },
         },
@@ -25,4 +25,4 @@ const DiarySchema = new mongoose.Schema<DiaryType>({
 });
 
 export default mongoose.models.Diary ||
-    mongoose.model<DiaryType>('Diary', DiarySchema);
+    mongoose.model<DiaryFormType>('Diary', DiarySchema);

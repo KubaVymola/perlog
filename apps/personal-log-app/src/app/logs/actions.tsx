@@ -1,7 +1,7 @@
 'use server';
 
 import mongoClient from '@/lib/mongodb/client';
-import Log from '@/lib/models/log';
+import Log from '@/lib/mongodb/models/log';
 import { revalidatePath } from 'next/cache';
 
 export async function addLog(formData: FormData) {

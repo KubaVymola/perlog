@@ -15,14 +15,14 @@ export enum DiaryFieldTypes {
 }
 
 export type DiaryFormFieldType = {
-    name: string;
+    fieldName: string;
     note?: string;
-    type?: DiaryFieldTypes | '';
+    fieldType?: DiaryFieldTypes | '';
     variant?: DiaryFieldVariants | '';
-    initalTarget?: string;
-    moveTargetByValue?: number;
-    moveTargetAfterDayCount?: number;
+    initialTarget?: string;
+    moveTargetByValue?: string;
+    moveTargetAfterDayCount?: string;
     selectValues?: string[];
-    rangeFrom?: number;
-    rangeTo?: number;
+    rangeFrom?: string;
+    rangeTo?: string;
 };

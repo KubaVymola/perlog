@@ -1,20 +1,23 @@
+import React, { useMemo } from 'react';
 import { CheckboxGroup } from '@nextui-org/react';
-import React, { useEffect } from 'react';
 import DaysCheckbox from './DaysPickerCheckbox';
 import { weekdays } from '@/lib/constants/weekdays';
+import { DiaryFormRepeatEnum } from '../types/diary-form';
 
 type DaysPickerProps = {
     value: string[];
     onChange: (e: any) => void;
-    type: 'week' | 'month';
+    type: DiaryFormRepeatEnum;
 };
 
 export default function DaysPicker({ type, value, onChange }: DaysPickerProps) {
-    const monthDays = Array.from({ length: 31 }, (_, index) =>
-        String(index + 1),
+    const monthDays = useMemo(
+        () => Array.from({ length: 31 }, (_, index) => String(index + 1)),
+        [],
     );
 
-    if (type !== 'week' && type !== 'month') return null;
+    if (type !== DiaryFormRepeatEnum.week && type !== DiaryFormRepeatEnum.month)
+        return null;
 
     return (
         <CheckboxGroup
@@ -23,11 +26,13 @@ export default function DaysPicker({ type, value, onChange }: DaysPickerProps) {
             value={value}
             onChange={onChange}
         >
-            {(type === 'week' ? weekdays : monthDays).map((day) => (
-                <DaysCheckbox key={day} value={day}>
-                    {day}
-                </DaysCheckbox>
-            ))}
+            {(type === DiaryFormRepeatEnum.week ? weekdays : monthDays).map(
+                (day) => (
+                    <DaysCheckbox key={day} value={day}>
+                        {day}
+                    </DaysCheckbox>
+                ),
+            )}
         </CheckboxGroup>
     );
 }

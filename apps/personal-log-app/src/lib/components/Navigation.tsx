@@ -15,7 +15,7 @@ export default function Navigation() {
             aria-label="Main navigation"
             selectedKey={pathname}
             classNames={{
-                tabList: 'shadow-lg',
+                tabList: 'shadow-lg grid grid-cols-3',
                 cursor: 'drop-shadow-lg',
             }}
         >

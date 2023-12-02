@@ -1,36 +1,34 @@
-import React, { cache } from 'react';
-import { Card, Divider } from '@nextui-org/react';
-import DiaryForm from '@/lib/components/DiaryForm';
+import React, { cache, useEffect } from 'react';
+import { Button, Card } from '@nextui-org/react';
 import mongoClient from '@/lib/mongodb/client';
-// import Diary, { DiaryType } from '@/lib/models/diary';
+import Diary from '@/lib/mongodb/models/diary';
+import { DiaryFormType } from '@/lib/types/diary-form';
+import Link from 'next/link';
 
-// const getData = cache(async () => {
-//     await mongoClient.connect();
-//     return (await Diary.find().exec()) as DiaryType[];
-// });
+const getData = async (): Promise<DiaryFormType[]> => {
+    await mongoClient.connect();
+    return await Diary.find().exec();
+};
 
 export default async function Page() {
-    // const data = await getData();
+    const data = await getData();
 
     return (
-        <>
-            {/* {data.map((diary) => (
-                <Card className="flex w-full flex-col items-center gap-4 p-4">
-                    <div>Edit {diary.name}</div>
-
-                    <Divider orientation="horizontal" />
-
-                    <DiaryForm key={diary.id} initialFormData={diary} />
+        <div>
+            {data.map((diary, index) => (
+                <Card
+                    key={index}
+                    className="flex w-full flex-col items-center gap-4 p-4"
+                >
+                    <div>Edit {diary.diaryName}</div>
                 </Card>
-            ))} */}
+            ))}
 
-            <Card className="flex w-full flex-col items-center gap-4 p-4">
-                <div>New diary</div>
-
-                <Divider orientation="horizontal" />
-
-                <DiaryForm />
-            </Card>
-        </>
+            <Link href="diaries/new">
+                <Button variant="solid" color="primary">
+                    New diary
+                </Button>
+            </Link>
+        </div>
     );
 }

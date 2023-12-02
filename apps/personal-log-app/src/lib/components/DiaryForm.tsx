@@ -7,22 +7,35 @@ import DaysPicker from './DaysPicker';
 import { weekdays } from '@/lib/constants/weekdays';
 import DiaryFormField from './DiaryFormField';
 import { addDiary } from '@/app/diaries/actions';
-import { DiaryFormType } from '../types/diary-form';
+import { DiaryFormRepeatEnum, DiaryFormType } from '../types/diary-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { diaryFormSchema } from '../validation/diary-form';
+import ErrorMessage from './ErrorMessage';
 
 export type DiaryFormProps = {
     initialFormData?: Partial<DiaryFormType>;
 };
 
 export default function DiaryForm({ initialFormData }: DiaryFormProps) {
-    const { register, handleSubmit, control, watch, setValue } =
-        useForm<DiaryFormType>({
-            defaultValues: {
-                name: 'test',
-                repeatType: 'week',
-                repeatValues: weekdays,
-                ...initialFormData,
-            },
-        });
+    const {
+        handleSubmit,
+        control,
+        watch,
+        setValue,
+        formState: { errors },
+    } = useForm<DiaryFormType>({
+        defaultValues: {
+            diaryName: 'test',
+            repeatType: DiaryFormRepeatEnum.week,
+            repeatValues: weekdays,
+            ...initialFormData,
+        },
+        resolver: zodResolver(diaryFormSchema),
+        reValidateMode: 'onChange',
+        criteriaMode: 'all',
+        delayError: 50,
+        mode: 'onBlur',
+    });
 
     const { fields, append, remove } = useFieldArray<DiaryFormType>({
         name: 'fields',
@@ -35,12 +48,12 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
     }, [watch('repeatType')]);
 
     function onSubmit(data: DiaryFormType) {
-        console.log(data);
-        // addDiary(data);
+        // console.log(data);
+        addDiary(data);
     }
 
     function addField() {
-        append({ name: '', note: '', type: '', variant: '' });
+        append({ fieldName: '', note: '', fieldType: '', variant: '' });
     }
 
     return (
@@ -50,11 +63,13 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
         >
             <Controller
                 control={control}
-                name="name"
+                name="diaryName"
                 render={({ field }) => (
                     <Input type="text" label="Diary name" {...field} />
                 )}
             />
+
+            <ErrorMessage message={errors.diaryName?.message} />
 
             <Controller
                 control={control}
@@ -66,15 +81,23 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
                         selectedKeys={field.value ? [field.value] : []}
                         {...field}
                     >
-                        <SelectItem key="week" value="week">
+                        <SelectItem
+                            key={DiaryFormRepeatEnum.week}
+                            value={DiaryFormRepeatEnum.week}
+                        >
                             Week
                         </SelectItem>
-                        <SelectItem key="month" value="month">
+                        <SelectItem
+                            key={DiaryFormRepeatEnum.month}
+                            value={DiaryFormRepeatEnum.month}
+                        >
                             Month
                         </SelectItem>
                     </Select>
                 )}
             />
+
+            <ErrorMessage message={errors.repeatType?.message} />
 
             <Controller
                 control={control}
@@ -89,7 +112,6 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
             />
 
             <Divider orientation="horizontal" />
-            {/* {fields.length !== 0 && <Divider orientation="horizontal" />} */}
 
             {fields.map((field, index) => (
                 <React.Fragment key={field.id}>
@@ -99,6 +121,7 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
                         remove={remove}
                         watch={watch}
                         setValue={setValue}
+                        errors={errors}
                     />
                     {index !== fields.length - 1 && (
                         <Divider orientation="horizontal" />
