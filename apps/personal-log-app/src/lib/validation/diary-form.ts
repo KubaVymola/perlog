@@ -1,11 +1,12 @@
 import { z } from 'zod';
 import { diaryFieldSchema } from './diary-form-field';
-import { DiaryFormType, DiaryFormRepeatEnum } from '../types/diary-form';
+import { IDiary } from '@/lib/common/types';
+import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
 
-export const diaryFormSchema = z.object<Record<keyof DiaryFormType, any>>({
+export const diaryFormSchema = z.object<Record<keyof IDiary, any>>({
     diaryName: z.string().min(3),
     note: z.string().optional(),
-    repeatType: z.nativeEnum(DiaryFormRepeatEnum, {
+    repeatType: z.nativeEnum(DiaryRepeatTypeEnum, {
         errorMap: () => ({
             message: 'Select repeat type',
         }),

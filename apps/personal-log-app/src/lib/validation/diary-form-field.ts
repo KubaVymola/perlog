@@ -1,16 +1,16 @@
 import { z } from 'zod';
+import { IDiaryField } from '@/lib/common/types';
 import {
-    DiaryFieldTypes,
-    DiaryFieldVariants,
-    DiaryFormFieldType,
-} from '../types/diary-form-field';
+    DiaryFieldTypesEnum,
+    DiaryFieldVariantsEnum,
+} from '@/lib/common/enums';
 
 export const diaryFieldSchema = z
-    .object<Record<keyof DiaryFormFieldType, any>>({
+    .object<Record<keyof IDiaryField, any>>({
         fieldName: z.string().min(3),
         note: z.string().optional(),
-        fieldType: z.nativeEnum(DiaryFieldTypes),
-        variant: z.nativeEnum(DiaryFieldVariants),
+        fieldType: z.nativeEnum(DiaryFieldTypesEnum),
+        variant: z.nativeEnum(DiaryFieldVariantsEnum),
         initialTarget: z.coerce.number().or(z.string()),
         moveTargetByValue: z.coerce.number(),
         moveTargetAfterDayCount: z.coerce.number().nonnegative(),
@@ -21,9 +21,9 @@ export const diaryFieldSchema = z
     .superRefine((ctx) => {
         console.log(typeof ctx.initialTarget);
         console.log(ctx.initialTarget);
-        if (ctx.fieldType === DiaryFieldTypes.Record) return true;
+        if (ctx.fieldType === DiaryFieldTypesEnum.Record) return true;
 
-        if (ctx.variant === DiaryFieldVariants.Time) {
+        if (ctx.variant === DiaryFieldVariantsEnum.Time) {
             if (typeof ctx.initialTarget !== 'string') return false;
 
             if (
@@ -35,7 +35,7 @@ export const diaryFieldSchema = z
             }
         }
 
-        if (ctx.fieldType === DiaryFieldTypes.MovingTarget) {
+        if (ctx.fieldType === DiaryFieldTypesEnum.MovingTarget) {
         }
 
         return true;

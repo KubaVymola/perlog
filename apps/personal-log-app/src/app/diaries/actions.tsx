@@ -2,17 +2,23 @@
 
 import mongoClient from '@/lib/mongodb/client';
 import Diary from '@/lib/mongodb/models/diary';
-import { DiaryFormType } from '@/lib/types/diary-form';
+import { IDiary } from '@/lib/common/types';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { RedirectType, redirect } from 'next/navigation';
 
-export async function addDiary(formData: DiaryFormType) {
+export async function addDiary(formData: IDiary) {
     await mongoClient.connect();
-
-    // TODO validate
 
     await Diary.create(formData);
 
-    revalidatePath('/');
-    redirect(`/diaries`);
+    revalidatePath('/', 'layout');
+    redirect(`/diaries`, RedirectType.push);
+}
+
+export async function deleteDiary(id: string) {
+    await mongoClient.connect();
+
+    await Diary.deleteOne({ _id: id });
+
+    revalidatePath('/', 'layout');
 }

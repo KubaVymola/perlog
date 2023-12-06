@@ -1,8 +1,30 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
-import { DiaryFormType } from '@/lib/types/diary-form';
+import { IDiary, IDiaryField } from '@/lib/common/types';
+import {
+    DiaryFieldTypesEnum,
+    DiaryFieldVariantsEnum,
+} from '@/lib/common/enums';
 
-const DiarySchema = new mongoose.Schema<DiaryFormType>({
+export interface IDiarySchema extends Document, IDiary {}
+export interface IDiaryFieldSchema extends Document, IDiaryField {}
+
+const DiaryFieldSchema = new mongoose.Schema<IDiaryFieldSchema>({
+    fieldName: {
+        type: String,
+    },
+    note: {
+        type: String,
+    },
+    fieldType: {
+        type: String,
+    },
+    variant: {
+        type: String,
+    },
+});
+
+const DiarySchema = new mongoose.Schema<IDiarySchema>({
     diaryName: {
         type: String,
     },
@@ -15,14 +37,10 @@ const DiarySchema = new mongoose.Schema<DiaryFormType>({
     repeatValues: {
         type: [String],
     },
-    fields: [
-        {
-            fieldName: {
-                type: String,
-            },
-        },
-    ],
+    fields: [DiaryFieldSchema],
 });
 
-export default mongoose.models.Diary ||
-    mongoose.model<DiaryFormType>('Diary', DiarySchema);
+const Diary: mongoose.Model<IDiarySchema> =
+    mongoose.models.Diary || mongoose.model<IDiarySchema>('Diary', DiarySchema);
+
+export default Diary;

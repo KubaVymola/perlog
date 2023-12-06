@@ -1,11 +1,11 @@
-import React, { cache } from 'react';
+import React from 'react';
 import mongoClient from '@/lib/mongodb/client';
 import Log from '@/lib/mongodb/models/log';
 
-const getData = cache(async () => {
+const getData = async () => {
     await mongoClient.connect();
     return await Log.find().exec();
-});
+};
 
 export default async function Page() {
     const data = await getData();

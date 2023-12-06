@@ -1,11 +1,30 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Tab, Tabs } from '@nextui-org/react';
+
+enum SelectedKeyType {
+    logs = '/logs',
+    diaries = '/diaries',
+    analysis = '/analysis',
+}
 
 export default function Navigation() {
     const pathname = usePathname();
+
+    const [selectedKey, setSelectedKey] = useState<string>(
+        SelectedKeyType.logs,
+    );
+
+    useEffect(() => {
+        setSelectedKey(
+            Object.values(SelectedKeyType).find((value) => {
+                if (pathname.startsWith(value)) return true;
+                return false;
+            }) ?? SelectedKeyType.logs,
+        );
+    }, [pathname]);
 
     return (
         <Tabs
@@ -13,15 +32,30 @@ export default function Navigation() {
             color="primary"
             radius="full"
             aria-label="Main navigation"
-            selectedKey={pathname}
+            selectedKey={selectedKey}
             classNames={{
                 tabList: 'shadow-lg grid grid-cols-3',
                 cursor: 'drop-shadow-lg',
             }}
         >
-            <Tab as={Link} title="Logs" key="/logs" href="/logs" />
-            <Tab as={Link} title="Diaries" key="/diaries" href="/diaries" />
-            <Tab as={Link} title="Analysis" key="/analysis" href="/analysis" />
+            <Tab
+                as={Link}
+                title="Logs"
+                key={SelectedKeyType.logs}
+                href={SelectedKeyType.logs}
+            />
+            <Tab
+                as={Link}
+                title="Diaries"
+                key={SelectedKeyType.diaries}
+                href={SelectedKeyType.diaries}
+            />
+            <Tab
+                as={Link}
+                title="Analysis"
+                key={SelectedKeyType.analysis}
+                href={SelectedKeyType.analysis}
+            />
         </Tabs>
     );
 }

@@ -1,19 +1,20 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Button, Divider, Input, Select, SelectItem } from '@nextui-org/react';
-import DaysPicker from './DaysPicker';
-import { weekdays } from '@/lib/constants/weekdays';
-import DiaryFormField from './DiaryFormField';
-import { addDiary } from '@/app/diaries/actions';
-import { DiaryFormRepeatEnum, DiaryFormType } from '../types/diary-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { diaryFormSchema } from '../validation/diary-form';
+import DaysPicker from './DaysPicker';
+import DiaryFormField from './DiaryFormField';
 import ErrorMessage from './ErrorMessage';
+import { addDiary } from '@/app/diaries/actions';
+import { weekdays } from '@/lib/common/constants/weekdays';
+import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
+import { IDiary } from '@/lib/common/types';
+import { diaryFormSchema } from '@/lib/validation/diary-form';
 
 export type DiaryFormProps = {
-    initialFormData?: Partial<DiaryFormType>;
+    initialFormData?: Partial<IDiary>;
 };
 
 export default function DiaryForm({ initialFormData }: DiaryFormProps) {
@@ -23,11 +24,11 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
         watch,
         setValue,
         formState: { errors },
-    } = useForm<DiaryFormType>({
+    } = useForm<IDiary>({
         defaultValues: {
-            diaryName: 'test',
-            repeatType: DiaryFormRepeatEnum.week,
-            repeatValues: weekdays,
+            diaryName: initialFormData?.diaryName ?? '',
+            repeatType: initialFormData?.repeatType ?? DiaryRepeatTypeEnum.week,
+            repeatValues: initialFormData?.repeatValues ?? weekdays,
             ...initialFormData,
         },
         resolver: zodResolver(diaryFormSchema),
@@ -37,18 +38,24 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
         mode: 'onBlur',
     });
 
-    const { fields, append, remove } = useFieldArray<DiaryFormType>({
+    const { fields, append, remove } = useFieldArray<IDiary>({
         name: 'fields',
         control,
     });
 
     useEffect(() => {
-        if (watch('repeatType') === 'week') setValue('repeatValues', weekdays);
-        if (watch('repeatType') === 'month') setValue('repeatValues', []);
-    }, [watch('repeatType')]);
+        const subscription = watch((value, { name, type }) =>
+            console.log(value, name, type),
+        );
+        return () => subscription.unsubscribe();
+    }, [watch]);
 
-    function onSubmit(data: DiaryFormType) {
-        // console.log(data);
+    // useEffect(() => {
+    //     if (watch('repeatType') === 'week') setValue('repeatValues', weekdays);
+    //     if (watch('repeatType') === 'month') setValue('repeatValues', []);
+    // }, [watch('repeatType')]);
+
+    function onSubmit(data: IDiary) {
         addDiary(data);
     }
 
@@ -82,14 +89,14 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
                         {...field}
                     >
                         <SelectItem
-                            key={DiaryFormRepeatEnum.week}
-                            value={DiaryFormRepeatEnum.week}
+                            key={DiaryRepeatTypeEnum.week}
+                            value={DiaryRepeatTypeEnum.week}
                         >
                             Week
                         </SelectItem>
                         <SelectItem
-                            key={DiaryFormRepeatEnum.month}
-                            value={DiaryFormRepeatEnum.month}
+                            key={DiaryRepeatTypeEnum.month}
+                            value={DiaryRepeatTypeEnum.month}
                         >
                             Month
                         </SelectItem>

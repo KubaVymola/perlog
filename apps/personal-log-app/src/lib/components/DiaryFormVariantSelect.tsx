@@ -4,12 +4,12 @@ import { Control, Controller } from 'react-hook-form';
 import {
     diaryFieldTypeData,
     diaryFieldVariantData,
-} from '@/lib/constants/diary-form-fields';
-import { DiaryFormType } from '@/lib/types/diary-form';
+} from '@/lib/common/constants/diary-form-fields';
+import { IDiary } from '@/lib/common/types';
 
 type DiaryFormVariantSelectProps = {
     index: number;
-    control: Control<DiaryFormType, any>;
+    control: Control<IDiary, any>;
     type: string | undefined;
 };
 

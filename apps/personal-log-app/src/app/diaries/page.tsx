@@ -1,31 +1,38 @@
-import React, { cache, useEffect } from 'react';
-import { Button, Card } from '@nextui-org/react';
+import React, { cache } from 'react';
+import { Button } from '@nextui-org/react';
 import mongoClient from '@/lib/mongodb/client';
-import Diary from '@/lib/mongodb/models/diary';
-import { DiaryFormType } from '@/lib/types/diary-form';
+import Diary, { IDiarySchema } from '@/lib/mongodb/models/diary';
 import Link from 'next/link';
+import DiaryListEntry from '@/lib/components/DiaryListEntry';
+import 'server-only';
 
-const getData = async (): Promise<DiaryFormType[]> => {
+const getData = async (): Promise<IDiarySchema[]> => {
     await mongoClient.connect();
-    return await Diary.find().exec();
+
+    const data = await Diary.find();
+
+    return data;
 };
 
 export default async function Page() {
     const data = await getData();
 
-    return (
-        <div>
-            {data.map((diary, index) => (
-                <Card
-                    key={index}
-                    className="flex w-full flex-col items-center gap-4 p-4"
-                >
-                    <div>Edit {diary.diaryName}</div>
-                </Card>
-            ))}
+    console.log(data);
 
-            <Link href="diaries/new">
-                <Button variant="solid" color="primary">
+    return (
+        <div className="flex flex-col items-stretch gap-2">
+            {data &&
+                data.map((diary) => (
+                    <DiaryListEntry key={diary._id} diary={diary} />
+                ))}
+
+            <Link href="diaries/new" passHref legacyBehavior>
+                <Button
+                    type="button"
+                    variant="solid"
+                    color="primary"
+                    className="w-full"
+                >
                     New diary
                 </Button>
             </Link>

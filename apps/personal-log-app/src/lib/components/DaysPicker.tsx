@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { CheckboxGroup } from '@nextui-org/react';
 import DaysCheckbox from './DaysPickerCheckbox';
-import { weekdays } from '@/lib/constants/weekdays';
-import { DiaryFormRepeatEnum } from '../types/diary-form';
+import { weekdays } from '@/lib/common/constants/weekdays';
+import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
 
 type DaysPickerProps = {
     value: string[];
     onChange: (e: any) => void;
-    type: DiaryFormRepeatEnum;
+    type: DiaryRepeatTypeEnum;
 };
 
 export default function DaysPicker({ type, value, onChange }: DaysPickerProps) {
@@ -16,7 +16,7 @@ export default function DaysPicker({ type, value, onChange }: DaysPickerProps) {
         [],
     );
 
-    if (type !== DiaryFormRepeatEnum.week && type !== DiaryFormRepeatEnum.month)
+    if (type !== DiaryRepeatTypeEnum.week && type !== DiaryRepeatTypeEnum.month)
         return null;
 
     return (
@@ -26,7 +26,7 @@ export default function DaysPicker({ type, value, onChange }: DaysPickerProps) {
             value={value}
             onChange={onChange}
         >
-            {(type === DiaryFormRepeatEnum.week ? weekdays : monthDays).map(
+            {(type === DiaryRepeatTypeEnum.week ? weekdays : monthDays).map(
                 (day) => (
                     <DaysCheckbox key={day} value={day}>
                         {day}

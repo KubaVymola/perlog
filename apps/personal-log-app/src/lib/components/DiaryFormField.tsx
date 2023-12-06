@@ -7,21 +7,23 @@ import {
     UseFormSetValue,
     UseFormWatch,
 } from 'react-hook-form';
-
 import DiaryFormVariantSelect from './DiaryFormVariantSelect';
 import ChipInput from './ChipInput';
-import { DiaryFormType } from '../types/diary-form';
-import { DiaryFieldTypes, DiaryFieldVariants } from '../types/diary-form-field';
-import { diaryFieldTypeData } from '../constants/diary-form-fields';
 import ErrorMessage from './ErrorMessage';
+import { IDiary } from '@/lib/common/types';
+import {
+    DiaryFieldTypesEnum,
+    DiaryFieldVariantsEnum,
+} from '@/lib/common/enums';
+import { diaryFieldTypeData } from '@/lib/common/constants/diary-form-fields';
 
 export type DiaryFormFieldProps = {
-    control: Control<DiaryFormType, any>;
+    control: Control<IDiary, any>;
     index: number;
-    watch: UseFormWatch<DiaryFormType>;
+    watch: UseFormWatch<IDiary>;
     remove: any;
-    setValue: UseFormSetValue<DiaryFormType>;
-    errors?: FieldErrors<DiaryFormType>;
+    setValue: UseFormSetValue<IDiary>;
+    errors?: FieldErrors<IDiary>;
 };
 
 export default function DiaryFormField({
@@ -33,13 +35,13 @@ export default function DiaryFormField({
     errors,
 }: DiaryFormFieldProps) {
     useEffect(() => {
-        setValue(`fields.${index}.variant`, '');
-        setValue(`fields.${index}.initialTarget`, '');
-        setValue(`fields.${index}.moveTargetByValue`, '');
-        setValue(`fields.${index}.moveTargetAfterDayCount`, '');
-        setValue(`fields.${index}.selectValues`, []);
-        setValue(`fields.${index}.rangeFrom`, '');
-        setValue(`fields.${index}.rangeTo`, '');
+        // setValue(`fields.${index}.variant`, '');
+        // setValue(`fields.${index}.initialTarget`, '');
+        // setValue(`fields.${index}.moveTargetByValue`, '');
+        // setValue(`fields.${index}.moveTargetAfterDayCount`, '');
+        // setValue(`fields.${index}.selectValues`, []);
+        // setValue(`fields.${index}.rangeFrom`, '');
+        // setValue(`fields.${index}.rangeTo`, '');
     }, [watch(`fields.${index}.fieldType`)]);
 
     const [innerErrors, setInnerErrors] = useState(
@@ -57,15 +59,14 @@ export default function DiaryFormField({
 
     useEffect(() => {
         if (
-            watch(`fields.${index}.variant`) === DiaryFieldVariants.FixedTags ||
-            watch(`fields.${index}.variant`) === DiaryFieldVariants.Select
+            watch(`fields.${index}.variant`) ===
+                DiaryFieldVariantsEnum.FixedTags ||
+            watch(`fields.${index}.variant`) === DiaryFieldVariantsEnum.Select
         )
             return;
 
-        setValue(`fields.${index}.selectValues`, []);
+        // setValue(`fields.${index}.selectValues`, []);
     }, [watch(`fields.${index}.variant`)]);
-
-    const shouldRenderInitialTarget = () => {};
 
     return (
         <div className="flex w-full flex-row items-center justify-start gap-4">
@@ -126,9 +127,9 @@ export default function DiaryFormField({
                 )}
 
                 {(watch(`fields.${index}.fieldType`) ===
-                    DiaryFieldTypes.FixedTarget ||
+                    DiaryFieldTypesEnum.FixedTarget ||
                     watch(`fields.${index}.fieldType`) ===
-                        DiaryFieldTypes.MovingTarget) &&
+                        DiaryFieldTypesEnum.MovingTarget) &&
                     watch(`fields.${index}.variant`) !== '' && (
                         <Controller
                             name={`fields.${index}.initialTarget`}
@@ -138,20 +139,20 @@ export default function DiaryFormField({
                                     {...field}
                                     type={
                                         watch(`fields.${index}.variant`) ===
-                                        DiaryFieldVariants.Time
+                                        DiaryFieldVariantsEnum.Time
                                             ? 'text'
                                             : 'number'
                                     }
                                     label="Target"
                                     placeholder={
                                         watch(`fields.${index}.variant`) ===
-                                        DiaryFieldVariants.Time
+                                        DiaryFieldVariantsEnum.Time
                                             ? '00:00'
                                             : watch(
                                                     `fields.${index}.variant`,
                                                     '',
                                                 ) ===
-                                                DiaryFieldVariants.RangeFloat
+                                                DiaryFieldVariantsEnum.RangeFloat
                                               ? '0.00'
                                               : '0'
                                     }
@@ -161,7 +162,7 @@ export default function DiaryFormField({
                     )}
 
                 {watch(`fields.${index}.fieldType`, '') ===
-                    DiaryFieldTypes.MovingTarget &&
+                    DiaryFieldTypesEnum.MovingTarget &&
                     watch(`fields.${index}.variant`, '') !== '' && (
                         <Controller
                             name={`fields.${index}.moveTargetByValue`}
@@ -177,7 +178,8 @@ export default function DiaryFormField({
                                             <span className="text-default-400 text-small">
                                                 {watch(
                                                     `fields.${index}.variant`,
-                                                ) === DiaryFieldVariants.Time
+                                                ) ===
+                                                DiaryFieldVariantsEnum.Time
                                                     ? 'minutes'
                                                     : ''}
                                             </span>
@@ -189,7 +191,7 @@ export default function DiaryFormField({
                     )}
 
                 {watch(`fields.${index}.fieldType`, '') ===
-                    DiaryFieldTypes.MovingTarget &&
+                    DiaryFieldTypesEnum.MovingTarget &&
                     watch(`fields.${index}.variant`, '') !== '' && (
                         <Controller
                             control={control}
@@ -217,9 +219,9 @@ export default function DiaryFormField({
                     )}
 
                 {(watch(`fields.${index}.variant`) ===
-                    DiaryFieldVariants.FixedTags ||
+                    DiaryFieldVariantsEnum.FixedTags ||
                     watch(`fields.${index}.variant`) ===
-                        DiaryFieldVariants.Select) && (
+                        DiaryFieldVariantsEnum.Select) && (
                     <div className="col-span-2">
                         <Controller
                             name={`fields.${index}.selectValues`}
@@ -236,9 +238,9 @@ export default function DiaryFormField({
                 )}
 
                 {(watch(`fields.${index}.variant`) ===
-                    DiaryFieldVariants.RangeInt ||
+                    DiaryFieldVariantsEnum.RangeInt ||
                     watch(`fields.${index}.variant`) ===
-                        DiaryFieldVariants.RangeFloat) && (
+                        DiaryFieldVariantsEnum.RangeFloat) && (
                     <>
                         <Controller
                             name={`fields.${index}.rangeFrom`}
@@ -250,7 +252,7 @@ export default function DiaryFormField({
                                     label="Range from"
                                     placeholder={
                                         watch(`fields.${index}.variant`) ===
-                                        DiaryFieldVariants.RangeFloat
+                                        DiaryFieldVariantsEnum.RangeFloat
                                             ? '0.00'
                                             : '0'
                                     }
@@ -267,7 +269,7 @@ export default function DiaryFormField({
                                     label="Range to"
                                     placeholder={
                                         watch(`fields.${index}.variant`) ===
-                                        DiaryFieldVariants.RangeFloat
+                                        DiaryFieldVariantsEnum.RangeFloat
                                             ? '0.00'
                                             : '0'
                                     }
