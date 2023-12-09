@@ -15,6 +15,15 @@ export async function addDiary(formData: IDiary) {
     redirect(`/diaries`, RedirectType.push);
 }
 
+export async function updateDiary(id: string, formData: IDiary) {
+    await mongoClient.connect();
+
+    await Diary.updateOne({ _id: id }, formData);
+
+    revalidatePath('/', 'layout');
+    redirect(`/diaries`, RedirectType.push);
+}
+
 export async function deleteDiary(id: string) {
     await mongoClient.connect();
 

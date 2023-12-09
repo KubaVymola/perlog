@@ -6,7 +6,7 @@ import {
 } from '@/lib/common/enums';
 
 export const diaryFieldSchema = z
-    .object<Record<keyof IDiaryField, any>>({
+    .object<Record<keyof IDiaryField, z.ZodTypeAny>>({
         fieldName: z.string().min(3),
         note: z.string().optional(),
         fieldType: z.nativeEnum(DiaryFieldTypesEnum),
@@ -35,8 +35,8 @@ export const diaryFieldSchema = z
             }
         }
 
-        if (ctx.fieldType === DiaryFieldTypesEnum.MovingTarget) {
-        }
+        // if (ctx.fieldType === DiaryFieldTypesEnum.MovingTarget) {
+        // }
 
         return true;
     });

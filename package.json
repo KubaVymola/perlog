@@ -3,7 +3,8 @@
     "version": "0.0.0",
     "license": "MIT",
     "scripts": {
-        "dev:perlog": "env-cmd -f ./.env.dev yarn nx serve personal-log-app"
+        "dev:perlog": "env-cmd -f ./.env.dev yarn nx serve personal-log-app",
+        "code:fix": "nx run-many --target lint"
     },
     "private": true,
     "packageManager": "yarn@1.22.19",

@@ -1,4 +1,4 @@
-import React, { cache } from 'react';
+import React from 'react';
 import { Button } from '@nextui-org/react';
 import mongoClient from '@/lib/mongodb/client';
 import Diary, { IDiarySchema } from '@/lib/mongodb/models/diary';
@@ -17,10 +17,8 @@ const getData = async (): Promise<IDiarySchema[]> => {
 export default async function Page() {
     const data = await getData();
 
-    console.log(data);
-
     return (
-        <div className="flex flex-col items-stretch gap-2">
+        <div className="flex w-full flex-col items-stretch gap-2">
             {data &&
                 data.map((diary) => (
                     <DiaryListEntry key={diary._id} diary={diary} />
@@ -31,7 +29,7 @@ export default async function Page() {
                     type="button"
                     variant="solid"
                     color="primary"
-                    className="w-full"
+                    className="h-auto w-full py-4"
                 >
                     New diary
                 </Button>

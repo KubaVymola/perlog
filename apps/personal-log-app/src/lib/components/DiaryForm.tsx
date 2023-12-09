@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, Divider, Input, Select, SelectItem } from '@nextui-org/react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import DaysPicker from './DaysPicker';
 import DiaryFormField from './DiaryFormField';
 import ErrorMessage from './ErrorMessage';
-import { addDiary } from '@/app/diaries/actions';
+import { addDiary, updateDiary } from '@/app/diaries/actions';
 import { weekdays } from '@/lib/common/constants/weekdays';
 import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
 import { IDiary } from '@/lib/common/types';
@@ -15,9 +15,13 @@ import { diaryFormSchema } from '@/lib/validation/diary-form';
 
 export type DiaryFormProps = {
     initialFormData?: Partial<IDiary>;
+    diaryId?: string;
 };
 
-export default function DiaryForm({ initialFormData }: DiaryFormProps) {
+export default function DiaryForm({
+    initialFormData,
+    diaryId,
+}: DiaryFormProps) {
     const {
         handleSubmit,
         control,
@@ -43,20 +47,19 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
         control,
     });
 
-    useEffect(() => {
-        const subscription = watch((value, { name, type }) =>
-            console.log(value, name, type),
-        );
-        return () => subscription.unsubscribe();
-    }, [watch]);
+    const resetRepeatValues = (newRepeatType: string) => {
+        console.log(newRepeatType);
 
-    // useEffect(() => {
-    //     if (watch('repeatType') === 'week') setValue('repeatValues', weekdays);
-    //     if (watch('repeatType') === 'month') setValue('repeatValues', []);
-    // }, [watch('repeatType')]);
+        if (newRepeatType === 'week') setValue('repeatValues', weekdays);
+        if (newRepeatType === 'month') setValue('repeatValues', []);
+    };
 
     function onSubmit(data: IDiary) {
-        addDiary(data);
+        if (diaryId) {
+            updateDiary(diaryId, data);
+        } else {
+            addDiary(data);
+        }
     }
 
     function addField() {
@@ -87,6 +90,10 @@ export default function DiaryForm({ initialFormData }: DiaryFormProps) {
                         placeholder="Select repeat type"
                         selectedKeys={field.value ? [field.value] : []}
                         {...field}
+                        onChange={(e) => {
+                            field.onChange(e);
+                            resetRepeatValues(e.target.value);
+                        }}
                     >
                         <SelectItem
                             key={DiaryRepeatTypeEnum.week}

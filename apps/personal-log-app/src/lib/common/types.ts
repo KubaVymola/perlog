@@ -29,3 +29,15 @@ export interface IDiaryField {
     rangeFrom?: string;
     rangeTo?: string;
 }
+
+export interface IDiaryWithId extends IDiary {
+    _id?: string;
+}
+
+export interface ILog {
+    date: Date;
+}
+
+export interface ILogWithId extends ILog {
+    _id?: string;
+}
