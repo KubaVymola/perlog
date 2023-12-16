@@ -12,6 +12,7 @@ import { weekdays } from '@/lib/common/constants/weekdays';
 import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
 import { IDiary } from '@/lib/common/types';
 import { diaryFormSchema } from '@/lib/validation/diary-form';
+import toast from 'react-hot-toast';
 
 export type DiaryFormProps = {
     initialFormData?: Partial<IDiary>;
@@ -48,17 +49,17 @@ export default function DiaryForm({
     });
 
     const resetRepeatValues = (newRepeatType: string) => {
-        console.log(newRepeatType);
-
         if (newRepeatType === 'week') setValue('repeatValues', weekdays);
         if (newRepeatType === 'month') setValue('repeatValues', []);
     };
 
-    function onSubmit(data: IDiary) {
+    async function onSubmit(data: IDiary) {
         if (diaryId) {
-            updateDiary(diaryId, data);
+            await updateDiary(diaryId, data);
+            toast.success('Diary updated');
         } else {
-            addDiary(data);
+            await addDiary(data);
+            toast.success('Diary created');
         }
     }
 

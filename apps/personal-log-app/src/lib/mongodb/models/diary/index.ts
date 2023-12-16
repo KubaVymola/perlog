@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
-
 import { IDiary, IDiaryField } from '@/lib/common/types';
+
 export interface IDiarySchema extends Document, IDiary {}
 export interface IDiaryFieldSchema extends Document, IDiaryField {}
 
@@ -37,22 +37,27 @@ const DiaryFieldSchema = new Schema<IDiaryFieldSchema>({
     },
 });
 
-const DiarySchema = new Schema<IDiarySchema>({
-    diaryName: {
-        type: String,
-        unique: true,
+const DiarySchema = new Schema<IDiarySchema>(
+    {
+        diaryName: {
+            type: String,
+            unique: true,
+        },
+        note: {
+            type: String,
+        },
+        repeatType: {
+            type: String,
+        },
+        repeatValues: {
+            type: [String],
+        },
+        fields: [DiaryFieldSchema],
     },
-    note: {
-        type: String,
+    {
+        timestamps: { updatedAt: true, createdAt: true },
     },
-    repeatType: {
-        type: String,
-    },
-    repeatValues: {
-        type: [String],
-    },
-    fields: [DiaryFieldSchema],
-});
+);
 
 const Diary: Model<IDiarySchema> =
     mongoose.models.Diary || mongoose.model<IDiarySchema>('Diary', DiarySchema);

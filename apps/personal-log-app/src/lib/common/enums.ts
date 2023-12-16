@@ -3,14 +3,29 @@ export enum DiaryRepeatTypeEnum {
     month = 'month',
 }
 
-export enum DiaryWeekdaysEnum {
-    Mo = 'Mo',
-    Tu = 'Tu',
-    We = 'We',
-    Th = 'Th',
-    Fr = 'Fr',
-    Sa = 'Sa',
-    Su = 'Su',
+export enum WeekdaysEnum {
+    Su = 0,
+    Mo,
+    Tu,
+    We,
+    Th,
+    Fr,
+    Sa,
+}
+
+export enum MonthsEnum {
+    January = 0,
+    February = 1,
+    March,
+    April,
+    May,
+    June,
+    July,
+    August,
+    September,
+    October,
+    November,
+    December,
 }
 
 export enum DiaryFieldTypesEnum {
@@ -20,6 +35,7 @@ export enum DiaryFieldTypesEnum {
 }
 
 export enum DiaryFieldVariantsEnum {
+    Text = 'Text',
     Number = 'Number',
     RangeInt = 'RangeInt',
     RangeFloat = 'RangeFloat',

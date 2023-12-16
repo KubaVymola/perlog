@@ -8,13 +8,14 @@ export const diaryFieldTypeData = [
         type: DiaryFieldTypesEnum.Record,
         displayName: 'Record',
         allowedVariants: [
-            DiaryFieldVariantsEnum.AnyTags,
-            DiaryFieldVariantsEnum.FixedTags,
-            DiaryFieldVariantsEnum.Select,
+            DiaryFieldVariantsEnum.Text,
             DiaryFieldVariantsEnum.Number,
             DiaryFieldVariantsEnum.Time,
             DiaryFieldVariantsEnum.RangeInt,
             DiaryFieldVariantsEnum.RangeFloat,
+            DiaryFieldVariantsEnum.AnyTags,
+            DiaryFieldVariantsEnum.FixedTags,
+            DiaryFieldVariantsEnum.Select,
         ],
     },
     {
@@ -43,14 +44,8 @@ export const diaryFieldVariantData: Record<
     DiaryFieldVariantsEnum,
     { displayName: string }
 > = {
-    [DiaryFieldVariantsEnum.AnyTags]: {
-        displayName: 'Any tags',
-    },
-    [DiaryFieldVariantsEnum.FixedTags]: {
-        displayName: 'Fixed tags',
-    },
-    [DiaryFieldVariantsEnum.Select]: {
-        displayName: 'Select',
+    [DiaryFieldVariantsEnum.Text]: {
+        displayName: 'Text',
     },
     [DiaryFieldVariantsEnum.Number]: {
         displayName: 'Number',
@@ -63,5 +58,14 @@ export const diaryFieldVariantData: Record<
     },
     [DiaryFieldVariantsEnum.RangeFloat]: {
         displayName: 'Range (Decimal)',
+    },
+    [DiaryFieldVariantsEnum.AnyTags]: {
+        displayName: 'Any tags',
+    },
+    [DiaryFieldVariantsEnum.FixedTags]: {
+        displayName: 'Fixed tags',
+    },
+    [DiaryFieldVariantsEnum.Select]: {
+        displayName: 'Select',
     },
 };

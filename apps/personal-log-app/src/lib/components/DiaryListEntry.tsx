@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, Card } from '@nextui-org/react';
 import React from 'react';
 import { IDiarySchema } from '../mongodb/models/diary';
@@ -5,13 +7,22 @@ import IconWrapper from './IconWrapper';
 import ModalCallback from './ModalCallback';
 import Link from 'next/link';
 import { deleteDiary } from '@/app/diaries/actions';
+import toast from 'react-hot-toast';
 
 type DiaryListEntryProps = {
     diary: IDiarySchema;
 };
 
 export default function DiaryListEntry({ diary }: DiaryListEntryProps) {
-    const deleteDiaryWithId = deleteDiary.bind(null, diary.id);
+    const deleteDiaryWrapper = async () => {
+        if (!diary._id) {
+            toast.error('Something went wrong');
+            return;
+        }
+
+        await deleteDiary(diary._id);
+        toast.success('Diary deleted');
+    };
 
     return (
         <Card key={diary._id} className="p-4">
@@ -46,8 +57,8 @@ export default function DiaryListEntry({ diary }: DiaryListEntryProps) {
                     }}
                     actionButtonChildren="Delete"
                     actionButtonProps={{ color: 'danger' }}
-                    callback={deleteDiaryWithId}
-                    modalContent={<p>Delete diary?</p>}
+                    callback={deleteDiaryWrapper}
+                    modalTitle="Really delete diary?"
                 />
             </div>
         </Card>

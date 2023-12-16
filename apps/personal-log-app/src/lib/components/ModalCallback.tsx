@@ -19,7 +19,8 @@ type ModalCallbackProps = {
     actionButtonProps?: ButtonProps;
     actionButtonChildren: React.ReactNode;
     callback: () => Promise<void>;
-    modalContent: React.ReactNode;
+    modalTitle?: React.ReactNode;
+    modalContent?: React.ReactNode;
 };
 
 export default function ModalCallback({
@@ -28,6 +29,7 @@ export default function ModalCallback({
     actionButtonProps,
     actionButtonChildren,
     callback,
+    modalTitle,
     modalContent,
 }: ModalCallbackProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -41,10 +43,14 @@ export default function ModalCallback({
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                Modal Title
-                            </ModalHeader>
-                            <ModalBody>{modalContent}</ModalBody>
+                            {modalTitle && (
+                                <ModalHeader className="flex flex-col gap-1">
+                                    {modalTitle}
+                                </ModalHeader>
+                            )}
+                            {modalContent && (
+                                <ModalBody>{modalContent}</ModalBody>
+                            )}
                             <ModalFooter>
                                 <Button
                                     color="danger"

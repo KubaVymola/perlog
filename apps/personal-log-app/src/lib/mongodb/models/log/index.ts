@@ -1,13 +1,31 @@
+import { ILog, ILogField } from '@/lib/common/types';
 import mongoose from 'mongoose';
 
-export interface Log extends mongoose.Document {
-    data: string;
-}
+export interface ILogSchema extends mongoose.Document, ILog {}
+export interface ILogFieldSchema extends mongoose.Document, ILogField {}
 
-const LogSchema = new mongoose.Schema<Log>({
-    data: {
+const LogFieldSchema = new mongoose.Schema<ILogFieldSchema>({
+    fieldName: {
         type: String,
+    },
+    note: {
+        type: String,
+    },
+    value: {
+        type: mongoose.Schema.Types.Mixed,
     },
 });
 
-export default mongoose.models.Log || mongoose.model<Log>('Log', LogSchema);
+const LogSchema = new mongoose.Schema<ILogSchema>({
+    date: {
+        type: Date,
+    },
+    diaryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Diary',
+    },
+    fields: [LogFieldSchema],
+});
+
+export default mongoose.models.Log ||
+    mongoose.model<ILogSchema>('Log', LogSchema);

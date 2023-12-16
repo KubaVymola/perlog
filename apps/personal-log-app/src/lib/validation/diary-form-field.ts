@@ -19,8 +19,6 @@ export const diaryFieldSchema = z
         rangeTo: z.coerce.number(),
     })
     .superRefine((ctx) => {
-        console.log(typeof ctx.initialTarget);
-        console.log(ctx.initialTarget);
         if (ctx.fieldType === DiaryFieldTypesEnum.Record) return true;
 
         if (ctx.variant === DiaryFieldVariantsEnum.Time) {

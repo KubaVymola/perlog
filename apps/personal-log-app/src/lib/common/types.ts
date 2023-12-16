@@ -1,21 +1,27 @@
 import {
     DiaryFieldTypesEnum,
     DiaryFieldVariantsEnum,
-    DiaryWeekdaysEnum,
     DiaryRepeatTypeEnum,
 } from './enums';
 
-export interface IDynamicRouteProps<T extends string> {
+export interface IStaticRouteProps {
+    searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export interface IDynamicRouteProps<T extends string>
+    extends IStaticRouteProps {
     params: { [P in T]: string };
 }
 
-export interface IDiary {
+export type IDiary = {
     diaryName: string;
     repeatType: DiaryRepeatTypeEnum;
-    repeatValues: DiaryWeekdaysEnum[] | string[];
+    repeatValues: string[];
     note?: string;
     fields: IDiaryField[];
-}
+    createdAt?: Date;
+    updatedAt?: Date;
+};
 
 export interface IDiaryField {
     fieldName: string;
@@ -31,13 +37,26 @@ export interface IDiaryField {
 }
 
 export interface IDiaryWithId extends IDiary {
-    _id?: string;
+    _id: string;
 }
 
 export interface ILog {
     date: Date;
+    diaryId: object;
+    fields: ILogField[];
+}
+
+export interface ILogField {
+    fieldName: string;
+    note?: string;
+    value: string | string[];
 }
 
 export interface ILogWithId extends ILog {
     _id?: string;
 }
+
+type HookFormOnChangeArgs<T> = { target: { value: T } };
+export type HookFormOnChangeType<T = string> = (
+    event: HookFormOnChangeArgs<T>,
+) => void;

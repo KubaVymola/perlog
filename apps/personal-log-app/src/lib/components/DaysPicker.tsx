@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
-import { CheckboxGroup } from '@nextui-org/react';
-import DaysCheckbox from './DaysPickerCheckbox';
-import { weekdays } from '@/lib/common/constants/weekdays';
+import { CheckboxGroup, CheckboxGroupProps } from '@nextui-org/react';
+import DaysCheckbox from './CheckboxGroupChip';
 import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
+import { weekdayNames } from '../common/constants/weekdays';
+import CheckboxGroupChip from './CheckboxGroupChip';
 
 type DaysPickerProps = {
     value: string[];
-    onChange: (e: any) => void;
+    onChange: (e: string[] | React.FormEvent<HTMLDivElement>) => void;
     type: DiaryRepeatTypeEnum;
 };
 
@@ -15,7 +16,6 @@ export default function DaysPicker({ type, value, onChange }: DaysPickerProps) {
         () => Array.from({ length: 31 }, (_, index) => String(index + 1)),
         [],
     );
-
     if (type !== DiaryRepeatTypeEnum.week && type !== DiaryRepeatTypeEnum.month)
         return null;
 
@@ -24,15 +24,29 @@ export default function DaysPicker({ type, value, onChange }: DaysPickerProps) {
             classNames={{ wrapper: 'gap-2 grid grid-cols-7 justify-stretch' }}
             orientation="horizontal"
             value={value}
-            onChange={onChange}
+            onChange={(value) => {
+                if (Array.isArray(value)) onChange(value);
+            }}
         >
-            {(type === DiaryRepeatTypeEnum.week ? weekdays : monthDays).map(
-                (day) => (
-                    <DaysCheckbox key={day} value={day}>
+            {type === DiaryRepeatTypeEnum.week &&
+                weekdayNames.map((day, index) => (
+                    <CheckboxGroupChip
+                        key={String(index)}
+                        value={String(index)}
+                        className={`row-start-1 ${
+                            index === 0 ? 'col-start-7' : `col-start-${index}`
+                        }`}
+                    >
                         {day}
-                    </DaysCheckbox>
-                ),
-            )}
+                    </CheckboxGroupChip>
+                ))}
+
+            {type === DiaryRepeatTypeEnum.month &&
+                monthDays.map((day) => (
+                    <CheckboxGroupChip key={day} value={day}>
+                        {day}
+                    </CheckboxGroupChip>
+                ))}
         </CheckboxGroup>
     );
 }

@@ -1,11 +1,7 @@
-import { DiaryWeekdaysEnum } from '@/lib/common/enums';
+import { WeekdaysEnum } from '../enums';
 
-export const weekdays = [
-    DiaryWeekdaysEnum.Mo,
-    DiaryWeekdaysEnum.Tu,
-    DiaryWeekdaysEnum.We,
-    DiaryWeekdaysEnum.Th,
-    DiaryWeekdaysEnum.Fr,
-    DiaryWeekdaysEnum.Sa,
-    DiaryWeekdaysEnum.Su,
-];
+export const weekdays = Object.values(WeekdaysEnum)
+    .filter((v) => !isNaN(Number(v)))
+    .map((v) => String(v));
+
+export const weekdayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];

@@ -176,6 +176,9 @@ export default function DiaryFormField({
                                     resetSelectValues(e.target.value);
                                     field.onChange(e);
                                 }}
+                                classNames={{
+                                    listboxWrapper: 'max-h-none',
+                                }}
                             >
                                 {allowedVariants.map((variant) => (
                                     <SelectItem key={variant} value={variant}>
@@ -259,7 +262,7 @@ export default function DiaryFormField({
                             control={control}
                             render={({ field: { onChange, value, ref } }) => (
                                 <ChipInput
-                                    onChange={onChange}
+                                    onChange={(value) => onChange(value)}
                                     value={value}
                                     ref={ref}
                                 />

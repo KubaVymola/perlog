@@ -5,13 +5,14 @@ import Diary, { IDiarySchema } from '@/lib/mongodb/models/diary';
 import Link from 'next/link';
 import DiaryListEntry from '@/lib/components/DiaryListEntry';
 import 'server-only';
+import cleanObject from '@/lib/utils/clean-object';
 
 const getData = async (): Promise<IDiarySchema[]> => {
     await mongoClient.connect();
 
     const data = await Diary.find();
 
-    return data;
+    return cleanObject(data);
 };
 
 export default async function Page() {
@@ -29,7 +30,8 @@ export default async function Page() {
                     type="button"
                     variant="solid"
                     color="primary"
-                    className="h-auto w-full py-4"
+                    radius="full"
+                    className="self-center"
                 >
                     New diary
                 </Button>

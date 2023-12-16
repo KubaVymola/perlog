@@ -1,31 +1,21 @@
 import { Chip, Input } from '@nextui-org/react';
-import React, { forwardRef, useEffect } from 'react';
+import React, { forwardRef, useCallback, useEffect } from 'react';
 
 type ChipInputProps = {
     addOnSpace?: boolean;
-    onChange: (...event: any[]) => void;
+    onChange: (value: string[]) => void;
     value: string[] | undefined;
+    orientation?: 'horizontal' | 'vertical';
 };
 
 const ChipInput = forwardRef(
-    ({ value: chips, onChange, addOnSpace }: ChipInputProps, ref) => {
+    (
+        { value: chips, onChange, addOnSpace, orientation }: ChipInputProps,
+        ref,
+    ) => {
         const [inputText, setInputText] = React.useState('');
 
-        useEffect(() => {
-            if (!addOnSpace) return;
-            if (!inputText.includes(' ')) return;
-
-            handleCreateChip();
-        }, [inputText, addOnSpace]);
-
-        const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.key !== 'Enter') return;
-
-            e.preventDefault();
-            handleCreateChip();
-        };
-
-        const handleCreateChip = () => {
+        const handleCreateChip = useCallback(() => {
             const toSetValue = addOnSpace
                 ? inputText.trim().split(' ')[0]
                 : inputText.trim();
@@ -40,20 +30,38 @@ const ChipInput = forwardRef(
                 return;
             }
 
-            onChange({ target: { value: [...(chips ?? []), toSetValue] } });
+            onChange([...(chips ?? []), toSetValue]);
             setInputText(() => '');
+        }, [addOnSpace, chips, inputText, onChange]);
+
+        useEffect(() => {
+            if (!addOnSpace) return;
+            if (!inputText.includes(' ')) return;
+
+            handleCreateChip();
+        }, [inputText, addOnSpace, handleCreateChip]);
+
+        const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key !== 'Enter') return;
+
+            e.preventDefault();
+            handleCreateChip();
         };
 
         const handleClose = (chipToRemove: string) => {
-            onChange({
-                target: {
-                    value: chips?.filter((chip) => chip !== chipToRemove),
-                },
-            });
+            onChange(chips?.filter((chip) => chip !== chipToRemove) ?? []);
+        };
+
+        const getOrientationClasses = () => {
+            if (orientation === 'vertical') {
+                return 'flex flex-col items-start w-full';
+            } else {
+                return 'grid grid-cols-2 items-center';
+            }
         };
 
         return (
-            <div className="grid grid-cols-2 items-center gap-2">
+            <div className={`${getOrientationClasses()} gap-2`}>
                 <Input
                     className="flex-1"
                     placeholder="Enter chips"
