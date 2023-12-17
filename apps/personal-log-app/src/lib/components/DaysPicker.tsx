@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
-import { CheckboxGroup, CheckboxGroupProps } from '@nextui-org/react';
-import DaysCheckbox from './CheckboxGroupChip';
+import { CheckboxGroup } from '@nextui-org/react';
 import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
 import { weekdayNames } from '../common/constants/weekdays';
 import CheckboxGroupChip from './CheckboxGroupChip';

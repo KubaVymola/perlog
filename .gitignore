@@ -46,3 +46,5 @@ Thumbs.db
 .env
 .env.*
 !.env.sample
+
+client_secret_*

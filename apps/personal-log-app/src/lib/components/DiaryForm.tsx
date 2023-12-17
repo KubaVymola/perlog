@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import DaysPicker from './DaysPicker';
 import DiaryFormField from './DiaryFormField';
 import ErrorMessage from './ErrorMessage';
-import { addDiary, updateDiary } from '@/app/diaries/actions';
+import { addDiary, updateDiary } from '@/app/actions/diaries';
 import { weekdays } from '@/lib/common/constants/weekdays';
 import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
 import { IDiary } from '@/lib/common/types';

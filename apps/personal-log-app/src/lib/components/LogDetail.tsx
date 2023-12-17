@@ -8,7 +8,7 @@ import { useSetQuery } from '../hooks/useSetQuery';
 import { generatePreviousDaysList, getDateString } from '../utils/date';
 import { numberOfSelectDays } from '../common/constants/date-select';
 import LogForm from './LogForm';
-import { deleteLog } from '@/app/logs/actions';
+import { deleteLog } from '@/app/actions/logs';
 import ModalCallback from './ModalCallback';
 import toast from 'react-hot-toast';
 

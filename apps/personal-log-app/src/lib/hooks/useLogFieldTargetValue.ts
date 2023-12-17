@@ -1,8 +1,6 @@
-import { useMemo } from 'react';
 import { dateDiffInDays } from '../utils/date';
-import { DiaryFormFieldProps } from '../components/DiaryFormField';
 import { LogFormFieldInitialData } from '../components/LogForm';
-import { DiaryFieldTypesEnum, DiaryFieldVariantsEnum } from '../common/enums';
+import { DiaryFieldTypesEnum } from '../common/enums';
 
 type UseLogFieldTargetProps = Pick<
     LogFormFieldInitialData,
@@ -32,7 +30,7 @@ export const useLogFieldTargetValue = (
     if (fieldType === DiaryFieldTypesEnum.FixedTarget) {
         if (typeof initialTarget === 'undefined') return undefined;
 
-        return useMemo(() => parseInt(initialTarget, 10), [initialTarget]);
+        return parseInt(initialTarget, 10);
     }
 
     if (fieldType === DiaryFieldTypesEnum.MovingTarget) {
@@ -46,18 +44,17 @@ export const useLogFieldTargetValue = (
 
         if (!diaryCreatedAt) return 'unknown';
 
-        return useMemo(
-            () =>
-                parseInt(initialTarget, 10) +
-                parseInt(moveTargetByValue, 10) *
-                    Math.floor(
-                        dateDiffInDays(
-                            new Date(),
-                            new Date(diaryCreatedAt),
-                            true,
-                        ) / parseInt(moveTargetAfterDayCount, 10),
-                    ),
-            [initialTarget, moveTargetByValue, moveTargetAfterDayCount],
+        return (
+            parseInt(initialTarget, 10) +
+            parseInt(moveTargetByValue, 10) *
+                Math.floor(
+                    dateDiffInDays(
+                        // TODO change new Date() to new Date(selectedDate)
+                        new Date(),
+                        new Date(diaryCreatedAt),
+                        true,
+                    ) / parseInt(moveTargetAfterDayCount, 10),
+                )
         );
     }
 

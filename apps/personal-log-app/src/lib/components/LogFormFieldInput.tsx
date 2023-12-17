@@ -5,10 +5,9 @@ import {
     SelectItem,
     Slider,
 } from '@nextui-org/react';
-import React, { ChangeEventHandler } from 'react';
+import React from 'react';
 import { LogFormFieldInitialData } from './LogForm';
-import { DiaryFieldTypesEnum, DiaryFieldVariantsEnum } from '../common/enums';
-import { HookFormOnChangeType } from '../common/types';
+import { DiaryFieldVariantsEnum } from '../common/enums';
 import ChipInput from './ChipInput';
 import CheckboxGroupChip from './CheckboxGroupChip';
 

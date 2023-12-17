@@ -6,7 +6,7 @@ import { IDiarySchema } from '../mongodb/models/diary';
 import IconWrapper from './IconWrapper';
 import ModalCallback from './ModalCallback';
 import Link from 'next/link';
-import { deleteDiary } from '@/app/diaries/actions';
+import { deleteDiary } from '@/app/actions/diaries';
 import toast from 'react-hot-toast';
 
 type DiaryListEntryProps = {

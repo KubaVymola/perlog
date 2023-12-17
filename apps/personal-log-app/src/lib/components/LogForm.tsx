@@ -5,8 +5,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { IDiaryField, IDiaryWithId, ILog, ILogField } from '../common/types';
 import LogFormField from './LogFormField';
 import { Button } from '@nextui-org/react';
-import { deleteLog, upsertLog } from '@/app/logs/actions';
-import ModalCallback from './ModalCallback';
+import { upsertLog } from '@/app/actions/logs';
 import toast from 'react-hot-toast';
 
 export type LogFormFieldInitialData = IDiaryField & Partial<ILogField>;

@@ -1,5 +1,9 @@
+import React from 'react';
+
 import './globals.css';
-import Navigation from '@/lib/components/Navigation';
+
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Providers } from './providers';
 import { Toaster } from 'react-hot-toast';
 
@@ -8,15 +12,17 @@ export const metadata = {
     description: 'Created by Jakub Vymola',
 };
 
-export default function RootLayout({
+export default async function layout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const session = await getServerSession(authOptions);
+
     return (
         <html lang="en" className="light">
             <body>
-                <Providers>
+                <Providers session={session}>
                     <Toaster
                         position="top-center"
                         containerClassName="text-base p-5"
@@ -32,10 +38,7 @@ export default function RootLayout({
                         }}
                     />
                     <div className="min-h-screen w-full bg-slate-200 p-4">
-                        <div className="mx-auto flex max-w-lg flex-col items-center gap-4">
-                            <Navigation />
-                            {children}
-                        </div>
+                        {children}
                     </div>
                 </Providers>
             </body>

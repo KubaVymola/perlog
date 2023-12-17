@@ -29,6 +29,7 @@
             "configurations": {
                 "development": {
                     "buildTarget": "personal-log-app:build:development",
+                    "port": 4200,
                     "dev": true
                 },
                 "production": {

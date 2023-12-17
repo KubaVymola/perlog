@@ -3,16 +3,12 @@ import {
     Control,
     Controller,
     FieldErrors,
-    UseFieldArrayRemove,
     UseFormSetValue,
     UseFormWatch,
 } from 'react-hook-form';
-import { IDiaryField, ILog, ILogField } from '../common/types';
-import { Card, Divider, Input } from '@nextui-org/react';
+import { Card, Divider } from '@nextui-org/react';
 import { LogFormData, LogFormFieldInitialData } from './LogForm';
 import LogFormFieldInput from './LogFormFieldInput';
-import { DiaryFieldTypesEnum, DiaryFieldVariantsEnum } from '../common/enums';
-import { dateDiffInDays } from '../utils/date';
 import { useLogFieldTargetValue } from '../hooks/useLogFieldTargetValue';
 
 export type LogFormFieldProps = {
@@ -28,16 +24,14 @@ export type LogFormFieldProps = {
 export default function LogFormField({
     control,
     index,
-    errors,
     fieldData,
     diaryCreateTime,
 }: LogFormFieldProps) {
     const { fieldName, note, variant } = fieldData;
+    const fieldTarget = useLogFieldTargetValue(fieldData, diaryCreateTime);
 
     if (!fieldName) return null;
     if (!variant || variant.length === 0) return null;
-
-    const fieldTarget = useLogFieldTargetValue(fieldData, diaryCreateTime);
 
     return (
         <Card className="flex w-full flex-row items-center justify-stretch gap-4 p-4">
