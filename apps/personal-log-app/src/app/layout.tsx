@@ -3,7 +3,7 @@ import React from 'react';
 import './globals.css';
 
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/common/auth';
 import { Providers } from './providers';
 import { Toaster } from 'react-hot-toast';
 
