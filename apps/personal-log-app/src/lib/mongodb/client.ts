@@ -15,7 +15,7 @@ class MongoDBClient {
 
     private async getMongoConnection() {
         const MONGO_DB_URL =
-            process.env.MONGO_DB_URI || 'mongodb://localhost:27017';
+            process.env.MONGODB_URI || 'mongodb://localhost:27017';
 
         return mongoose.connect(MONGO_DB_URL, {
             bufferCommands: false,
