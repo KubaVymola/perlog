@@ -15,4 +15,5 @@ export const diaryFormSchema = z.object<
     }),
     repeatValues: z.array(z.string()),
     fields: z.array(diaryFieldSchema),
+    email: z.string(),
 });
