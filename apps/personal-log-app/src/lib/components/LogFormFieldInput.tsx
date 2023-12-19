@@ -51,6 +51,7 @@ export default function LogFormFieldInput({
                 label="label"
                 onChange={(e) => onChange(e.target.value)}
                 value={value}
+                selectedKeys={value && !Array.isArray(value) ? [value] : []}
             >
                 {fieldData.selectValues?.map((selectValue) => (
                     <SelectItem key={selectValue} value={selectValue}>
