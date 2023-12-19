@@ -8,19 +8,22 @@ import ModalCallback from './ModalCallback';
 import Link from 'next/link';
 import { deleteDiary } from '@/app/actions/diaries';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 type DiaryListEntryProps = {
     diary: IDiarySchema;
 };
 
 export default function DiaryListEntry({ diary }: DiaryListEntryProps) {
+    const { data: session } = useSession();
+
     const deleteDiaryWrapper = async () => {
         if (!diary._id) {
             toast.error('Something went wrong');
             return;
         }
 
-        await deleteDiary(diary._id);
+        await deleteDiary(diary._id, session?.user?.email);
         toast.success('Diary deleted');
     };
 

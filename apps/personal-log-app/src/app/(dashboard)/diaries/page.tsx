@@ -6,17 +6,26 @@ import Link from 'next/link';
 import DiaryListEntry from '@/lib/components/DiaryListEntry';
 import 'server-only';
 import cleanObject from '@/lib/utils/clean-object';
+import { getServerSession } from 'next-auth';
 
-const getData = async (): Promise<IDiarySchema[]> => {
+const getData = async (
+    email: string | null | undefined,
+): Promise<IDiarySchema[]> => {
+    if (!email) return [];
+
     await mongoClient.connect();
 
-    const data = await Diary.find();
+    const data = await Diary.find({ email });
 
     return cleanObject(data);
 };
 
 export default async function Page() {
-    const data = await getData();
+    const session = await getServerSession();
+
+    console.log('get data', session?.user?.email);
+
+    const data = await getData(session?.user?.email);
 
     return (
         <div className="flex w-full flex-col items-stretch gap-2">

@@ -24,6 +24,9 @@ const LogSchema = new mongoose.Schema<ILogSchema>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Diary',
     },
+    email: {
+        type: String,
+    },
     fields: [LogFieldSchema],
 });
 

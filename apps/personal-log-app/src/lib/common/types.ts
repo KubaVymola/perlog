@@ -21,6 +21,7 @@ export type IDiary = {
     fields: IDiaryField[];
     createdAt?: Date;
     updatedAt?: Date;
+    email: string;
 };
 
 export interface IDiaryField {
@@ -44,6 +45,7 @@ export interface ILog {
     date: Date;
     diaryId: object;
     fields: ILogField[];
+    email: string;
 }
 
 export interface ILogField {

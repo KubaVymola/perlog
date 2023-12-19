@@ -11,6 +11,7 @@ import LogForm from './LogForm';
 import { deleteLog } from '@/app/actions/logs';
 import ModalCallback from './ModalCallback';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 type LogDetailType = {
     diaries: IDiaryWithId[];
@@ -24,6 +25,7 @@ export default function LogDetail({
     lastNLogDates,
 }: LogDetailType) {
     const setQuery = useSetQuery();
+    const { data: session } = useSession();
 
     const [daysList, setDaysList] = useState<Date[] | undefined>(undefined);
     const [selectedDay, setSelectedDay] = useState<string | undefined>(
@@ -64,7 +66,9 @@ export default function LogDetail({
     }, [selectedDay, selectedDiaryId]);
 
     const deleteLogWrapper = async () => {
-        await deleteLog(log?._id);
+        if (!log?._id) return;
+
+        await deleteLog(log._id, session?.user?.email);
         toast.success('Log entry deleted');
     };
 

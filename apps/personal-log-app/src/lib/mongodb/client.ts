@@ -19,11 +19,16 @@ class MongoDBClient {
 
         return mongoose.connect(MONGO_DB_URL, {
             bufferCommands: false,
-            // dbName: process.env.MONGO_DB_DATABASE || 'mongo-db',
-            // auth: {
-            //     password: process.env.MONGO_DB_PASSWORD || 'admin',
-            //     username: process.env.MONGO_DB_USERNAME || 'admin',
-            // },
+            ...(process.env.MONGO_DB_DATABASE && {
+                dbName: process.env.MONGO_DB_DATABASE || 'perlog',
+            }),
+            ...(process.env.MONGO_DB_PASSWORD &&
+                process.env.MONGO_DB_USERNAME && {
+                    auth: {
+                        password: process.env.MONGO_DB_PASSWORD || 'admin',
+                        username: process.env.MONGO_DB_USERNAME || 'admin',
+                    },
+                }),
         });
     }
 

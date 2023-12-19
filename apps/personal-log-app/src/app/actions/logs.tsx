@@ -5,13 +5,19 @@ import mongoClient from '@/lib/mongodb/client';
 import Log from '@/lib/mongodb/models/log';
 import { revalidatePath } from 'next/cache';
 
-async function createLog(logData: ILog, selectedDate: string, diaryId: string) {
+async function createLog(
+    logData: ILog,
+    selectedDate: string,
+    diaryId: string,
+    email: string,
+) {
     await mongoClient.connect();
 
     await Log.create({
         ...logData,
         date: new Date(new Date(selectedDate).setUTCHours(12, 0, 0)),
         diaryId,
+        email,
     });
 }
 
@@ -20,15 +26,17 @@ async function updateLog(
     logData: ILog,
     selectedDate: string,
     diaryId: string,
+    email: string,
 ) {
     await mongoClient.connect();
 
     await Log.updateOne(
-        { _id: logId },
+        { _id: logId, email },
         {
             ...logData,
             date: new Date(new Date(selectedDate).setUTCHours(12, 0, 0)),
             diaryId,
+            email,
         },
     );
 }
@@ -37,7 +45,10 @@ export async function upsertLog(
     logData: ILog,
     selectedDate: string,
     diaryId: string,
+    email: string | null | undefined,
 ) {
+    if (!email) return;
+
     await mongoClient.connect();
 
     const startDate = new Date(new Date(selectedDate).setUTCHours(0, 0, 0, 0));
@@ -45,6 +56,7 @@ export async function upsertLog(
 
     const foundLogs: ILogWithId[] = await Log.find({
         diaryId,
+        email,
         date: {
             $gte: startDate,
             $lte: endDate,
@@ -52,21 +64,37 @@ export async function upsertLog(
     });
 
     if (foundLogs.length > 0 && foundLogs[0]._id) {
-        await Log.deleteMany({ _id: foundLogs.slice(1).map((log) => log._id) });
-        await updateLog(foundLogs[0]._id, logData, selectedDate, diaryId);
+        await Log.deleteMany({
+            _id: foundLogs.slice(1).map((log) => log._id),
+            email,
+        });
+
+        await updateLog(
+            foundLogs[0]._id,
+            logData,
+            selectedDate,
+            diaryId,
+            email,
+        );
+
         revalidatePath('/', 'layout');
     } else {
-        await createLog(logData, selectedDate, diaryId);
+        await createLog(logData, selectedDate, diaryId, email);
+
         revalidatePath('/', 'layout');
     }
 }
 
-export async function deleteLog(logId?: string) {
+export async function deleteLog(
+    logId: string,
+    email: string | null | undefined,
+) {
     if (!logId) return;
+    if (!email) return;
 
     await mongoClient.connect();
 
-    await Log.deleteOne({ _id: logId });
+    await Log.deleteOne({ _id: logId, email });
 
     revalidatePath('/', 'layout');
 }

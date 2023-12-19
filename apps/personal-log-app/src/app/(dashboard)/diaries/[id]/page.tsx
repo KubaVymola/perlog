@@ -3,8 +3,14 @@ import { IDiaryWithId, IDynamicRouteProps } from '@/lib/common/types';
 import mongoClient from '@/lib/mongodb/client';
 import Diary from '@/lib/mongodb/models/diary';
 import DiaryDetail from '@/lib/components/DiaryDetail';
+import { getServerSession } from 'next-auth';
 
-const getDiary = async (id: string): Promise<IDiaryWithId | null> => {
+const getDiary = async (
+    id: string,
+    email: string | null | undefined,
+): Promise<IDiaryWithId | null> => {
+    if (!email) return null;
+
     await mongoClient.connect();
     const data = await Diary.findById(id).lean();
 
@@ -16,7 +22,9 @@ const getDiary = async (id: string): Promise<IDiaryWithId | null> => {
 };
 
 export default async function Page({ params }: IDynamicRouteProps<'id'>) {
-    const diaryData = await getDiary(params.id);
+    const session = await getServerSession();
+
+    const diaryData = await getDiary(params.id, session?.user?.email);
 
     if (!diaryData) return null;
 

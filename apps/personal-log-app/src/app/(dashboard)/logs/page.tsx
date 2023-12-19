@@ -12,11 +12,16 @@ import LogDetail from '@/lib/components/LogDetail';
 import { numberOfSelectDays } from '@/lib/common/constants/date-select';
 import { queryParamToSingleValue } from '@/lib/utils/sanitize-query-param';
 import { getDateString } from '@/lib/utils/date';
+import { getServerSession } from 'next-auth';
 
-const getDiaries = async (): Promise<IDiaryWithId[]> => {
+const getDiaries = async (
+    email: string | null | undefined,
+): Promise<IDiaryWithId[]> => {
+    if (!email) return [];
+
     await mongoClient.connect();
 
-    const diaries = await Diary.find();
+    const diaries = await Diary.find({ email });
 
     return cleanObject(diaries);
 };
@@ -24,7 +29,10 @@ const getDiaries = async (): Promise<IDiaryWithId[]> => {
 const getLog = async (
     diaryId: string,
     date: string,
+    email: string | null | undefined,
 ): Promise<ILogWithId | undefined> => {
+    if (!email) return;
+
     await mongoClient.connect();
 
     const startDate = new Date(new Date(date).setUTCHours(0, 0, 0, 0));
@@ -32,6 +40,7 @@ const getLog = async (
 
     const log: ILogWithId | null = await Log.findOne({
         diaryId,
+        email,
         date: {
             $gte: startDate,
             $lte: endDate,
@@ -41,7 +50,12 @@ const getLog = async (
     return cleanObject(log) ?? undefined;
 };
 
-const getLastNLogDates = async (diaryId: string) => {
+const getLastNLogDates = async (
+    diaryId: string,
+    email: string | null | undefined,
+) => {
+    if (!email) return [];
+
     await mongoClient.connect();
 
     const logs: { date: Date }[] = cleanObject(
@@ -54,13 +68,17 @@ const getLastNLogDates = async (diaryId: string) => {
 };
 
 export default async function Page({ searchParams }: IStaticRouteProps) {
-    const diaries = await getDiaries();
+    const session = await getServerSession();
+    const email = session?.user?.email;
+
+    const diaries = await getDiaries(email);
     let log: ILogWithId | undefined = undefined;
     let lastNLogDates: string[] | undefined = undefined;
 
     if (searchParams && searchParams['diary']) {
         lastNLogDates = await getLastNLogDates(
             queryParamToSingleValue(searchParams['diary']),
+            email,
         );
     }
 
@@ -68,6 +86,7 @@ export default async function Page({ searchParams }: IStaticRouteProps) {
         log = await getLog(
             queryParamToSingleValue(searchParams['diary']),
             queryParamToSingleValue(searchParams['day']),
+            email,
         );
     }
 

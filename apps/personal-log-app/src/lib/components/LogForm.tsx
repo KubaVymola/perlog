@@ -7,6 +7,7 @@ import LogFormField from './LogFormField';
 import { Button } from '@nextui-org/react';
 import { upsertLog } from '@/app/actions/logs';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 export type LogFormFieldInitialData = IDiaryField & Partial<ILogField>;
 export type LogFormData = ILog & { fields: LogFormFieldInitialData[] };
@@ -49,6 +50,8 @@ export default function LogForm({
         },
     });
 
+    const { data: session } = useSession();
+
     const { fields } = useFieldArray<LogFormData>({
         name: 'fields',
         control,
@@ -59,7 +62,12 @@ export default function LogForm({
     }, [selectedDiary, selectedDay, initialData]);
 
     async function onSubmit(data: ILog) {
-        await upsertLog(data, selectedDay, selectedDiary._id);
+        await upsertLog(
+            data,
+            selectedDay,
+            selectedDiary._id,
+            session?.user?.email,
+        );
 
         if (initialData) toast.success('Log entry updated');
         else toast.success('Log entry created');

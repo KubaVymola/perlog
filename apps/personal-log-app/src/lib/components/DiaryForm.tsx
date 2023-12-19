@@ -13,6 +13,7 @@ import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
 import { IDiary } from '@/lib/common/types';
 import { diaryFormSchema } from '@/lib/validation/diary-form';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 export type DiaryFormProps = {
     initialFormData?: Partial<IDiary>;
@@ -23,6 +24,8 @@ export default function DiaryForm({
     initialFormData,
     diaryId,
 }: DiaryFormProps) {
+    const { data: session } = useSession();
+
     const {
         handleSubmit,
         control,
@@ -55,10 +58,10 @@ export default function DiaryForm({
 
     async function onSubmit(data: IDiary) {
         if (diaryId) {
-            await updateDiary(diaryId, data);
+            await updateDiary(diaryId, data, session?.user?.email);
             toast.success('Diary updated');
         } else {
-            await addDiary(data);
+            await addDiary(data, session?.user?.email);
             toast.success('Diary created');
         }
     }

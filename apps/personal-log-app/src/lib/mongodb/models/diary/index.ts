@@ -53,6 +53,9 @@ const DiarySchema = new Schema<IDiarySchema>(
             type: [String],
         },
         fields: [DiaryFieldSchema],
+        email: {
+            type: String,
+        },
     },
     {
         timestamps: { updatedAt: true, createdAt: true },
