@@ -4,7 +4,10 @@ import { IDiary } from '@/lib/common/types';
 import { DiaryRepeatTypeEnum } from '@/lib/common/enums';
 
 export const diaryFormSchema = z.object<
-    Record<keyof Omit<IDiary, 'updatedAt' | 'createdAt'>, z.ZodTypeAny>
+    Record<
+        keyof Omit<IDiary, 'updatedAt' | 'createdAt' | 'email'>,
+        z.ZodTypeAny
+    >
 >({
     diaryName: z.string().min(3),
     note: z.string().optional(),
@@ -15,5 +18,4 @@ export const diaryFormSchema = z.object<
     }),
     repeatValues: z.array(z.string()),
     fields: z.array(diaryFieldSchema),
-    email: z.string(),
 });
